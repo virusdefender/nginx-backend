@@ -1,0 +1,15 @@
+version: "2"
+services:
+    waf_backend_nginx:
+        image: nginx:1.13.5-alpine
+        container_name: waf_backend_nginx
+        restart: always
+        volumes:
+            - $PWD/nginx:/etc/nginx/conf.d
+            - $PWD/resources:/resources
+            - $PWD/deploy:/deploy
+        ports:
+            - "0.0.0.0:81:80"
+            - "127.0.0.1:444:443"
+            - "127.0.0.1:82-85:82-85"
+        command: "sh -c /deploy/run.sh"

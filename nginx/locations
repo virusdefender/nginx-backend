@@ -1,0 +1,29 @@
+location / {
+    return 200 "<h1>It Workded!</h1> <p>Query string is $query_string</p> <p>Host is $http_host</p> <p>X-Real-IP is $http_x_real_ip</p> <p>XFF is $http_x_forwarded_for</p> <p>Server port is $server_port</p>";
+    add_header Content-Type text/html;
+}
+
+location /500 {
+    return 500 "An unhandled exception was generated during the execution of the current web request.";
+    add_header Content-Type text/html;
+}
+
+location /resp {
+    autoindex on;
+    alias /resources/resp;
+    # disable cache
+    expires off;
+    etag off;
+    if_modified_since  off;
+    add_header Last-Modified  "";
+    add_header Cache-Control private;
+}
+
+location =/ws/echo {
+    proxy_pass http://127.0.0.1:82;
+    proxy_redirect off;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Origin '';
+}
